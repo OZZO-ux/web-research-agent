@@ -4,7 +4,10 @@ import { tavily } from "@tavily/core";
 import * as cheerio from "cheerio";
 import { db } from "@/lib/db";
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+  baseURL: process.env.OPENAI_BASE_URL || undefined,
+});
 const tvly = tavily({ apiKey: process.env.TAVILY_API_KEY });
 
 function extractText(html: string, maxLength = 8000): string {
@@ -94,7 +97,7 @@ export async function POST(request: NextRequest) {
       .join("\n\n");
 
     const completion = await openai.chat.completions.create({
-      model: process.env.OPENAI_MODEL || "gpt-4o-mini",
+      model: process.env.OPENAI_MODEL || "google/gemini-2.0-flash-001",
       messages: [
         {
           role: "system",
